@@ -73,6 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      attestations: write
 
     steps:
       - name: Download all artifacts
@@ -87,9 +88,10 @@ jobs:
           ls -la release/
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.2.1
         with:
           files: release/*
           generate_release_notes: true
+          draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

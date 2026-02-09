@@ -44,6 +44,26 @@ mod platform {
     }
 }
 
+#[cfg(target_os = "linux")]
+mod platform {
+    /// Returns seconds since the last input event of any type.
+    pub fn seconds_since_last_input() -> f64 {
+        // Try using xprintidle if available (returns milliseconds)
+        if let Ok(output) = std::process::Command::new("xprintidle").output() {
+            if output.status.success() {
+                if let Ok(ms_str) = String::from_utf8(output.stdout) {
+                    if let Ok(ms) = ms_str.trim().parse::<u64>() {
+                        return ms as f64 / 1000.0;
+                    }
+                }
+            }
+        }
+        // Fallback: read from /proc/interrupts changes would be complex,
+        // so assume active (return 0) to avoid false idle detection
+        0.0
+    }
+}
+
 pub struct ActivityMonitor {
     poll_interval_secs: f64,
 }

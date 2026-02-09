@@ -53,6 +53,15 @@ fn dirs_next() -> Option<PathBuf> {
             return Some(path);
         }
     }
+    #[cfg(target_os = "linux")]
+    {
+        if let Some(home) = std::env::var_os("HOME") {
+            let mut path = PathBuf::from(home);
+            path.push(".config/com.stretchy.app");
+            let _ = std::fs::create_dir_all(&path);
+            return Some(path);
+        }
+    }
     None
 }
 
@@ -318,6 +327,7 @@ fn main() {
                     if !state.is_active {
                         // Still update tray when paused, but only once
                         if last_tray_status != 0 {
+                            #[cfg(target_os = "macos")]
                             let _ = monitor_handle.tray_handle().set_title("Paused");
                             let _ = monitor_handle.tray_handle().set_icon(tauri::Icon::Raw(
                                 include_bytes!("../icons/tray-paused.png").to_vec(),
@@ -405,21 +415,24 @@ fn main() {
                         last_tray_status = current_status;
                     }
 
-                    // Update tray title and emit UI tick every 5 seconds
+                    // Update tray title (macOS only) and emit UI tick every 5 seconds
                     if state.elapsed_secs % 5 == 0 || current_status != last_tray_status {
-                        let remaining = threshold.saturating_sub(state.elapsed_secs);
-                        let tray_title = if state.reminder_showing {
-                            String::from("Stretch!")
-                        } else if state.is_idle {
-                            format!(
-                                "Idle {:02}:{:02}",
-                                state.idle_duration_secs / 60,
-                                state.idle_duration_secs % 60
-                            )
-                        } else {
-                            format!("{:02}:{:02}", remaining / 60, remaining % 60)
-                        };
-                        let _ = monitor_handle.tray_handle().set_title(&tray_title);
+                        #[cfg(target_os = "macos")]
+                        {
+                            let remaining = threshold.saturating_sub(state.elapsed_secs);
+                            let tray_title = if state.reminder_showing {
+                                String::from("Stretch!")
+                            } else if state.is_idle {
+                                format!(
+                                    "Idle {:02}:{:02}",
+                                    state.idle_duration_secs / 60,
+                                    state.idle_duration_secs % 60
+                                )
+                            } else {
+                                format!("{:02}:{:02}", remaining / 60, remaining % 60)
+                            };
+                            let _ = monitor_handle.tray_handle().set_title(&tray_title);
+                        }
                         let _ = monitor_handle.emit_all("state-tick", state.clone());
                     }
                 }

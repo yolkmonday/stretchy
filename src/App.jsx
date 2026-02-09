@@ -2,19 +2,18 @@ import { useState, useEffect, useCallback } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
 import { Icon } from "@iconify/react";
-import { exercises, getQuickExercise, getSessionExercises } from "./exercises";
+import {
+  getExercises,
+  getQuickExercise,
+  getSessionExercises,
+} from "./exercises";
+import { LanguageProvider, useLanguage, LANGUAGES } from "./i18n.jsx";
 
-const TABS = ["Timer", "Gerakan", "Riwayat"];
 const THEME_CYCLE = ["system", "light", "dark"];
 const THEME_ICONS = {
   system: "solar:monitor-bold-duotone",
   light: "solar:sun-bold-duotone",
   dark: "solar:moon-bold-duotone",
-};
-const THEME_LABELS = {
-  system: "Sistem",
-  light: "Light",
-  dark: "Dark",
 };
 
 function formatTime(totalSecs) {
@@ -24,6 +23,7 @@ function formatTime(totalSecs) {
 }
 
 function TimerRing({ elapsed, total, isIdle, reminderShowing }) {
+  const { t } = useLanguage();
   const radius = 88;
   const circumference = 2 * Math.PI * radius;
   const progress = Math.min(elapsed / total, 1);
@@ -50,10 +50,10 @@ function TimerRing({ elapsed, total, isIdle, reminderShowing }) {
         <div className="timer-time">{formatTime(total - elapsed)}</div>
         <div className="timer-label">
           {reminderShowing
-            ? "Waktunya stretching!"
+            ? t("timeToStretch")
             : isIdle
-              ? "Kamu sedang istirahat"
-              : "sampai stretching"}
+              ? t("youAreResting")
+              : t("untilStretch")}
         </div>
       </div>
     </div>
@@ -61,6 +61,7 @@ function TimerRing({ elapsed, total, isIdle, reminderShowing }) {
 }
 
 function ExerciseCard({ exercise }) {
+  const { t } = useLanguage();
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -73,9 +74,9 @@ function ExerciseCard({ exercise }) {
           <Icon icon={exercise.icon} width={28} />
         </div>
         <div className="exercise-info">
-          <div className="exercise-name">{exercise.nameId}</div>
+          <div className="exercise-name">{exercise.name}</div>
           <div className="exercise-meta">
-            {exercise.reps} · {exercise.duration} detik
+            {exercise.reps} · {exercise.duration} {t("seconds")}
           </div>
         </div>
       </div>
@@ -90,7 +91,7 @@ function ExerciseCard({ exercise }) {
           <div className="exercise-target">
             <strong>Target:</strong> {exercise.targetMuscle}
             <br />
-            <strong>Manfaat:</strong> {exercise.benefit}
+            <strong>{t("en") === t("en") ? "" : ""}</strong> {exercise.benefit}
           </div>
         </div>
       )}
@@ -99,17 +100,16 @@ function ExerciseCard({ exercise }) {
 }
 
 function ReminderModal({ exercise, onDone, onSnooze }) {
+  const { t } = useLanguage();
+
   return (
     <div className="reminder-overlay">
       <div className="reminder-modal">
         <div className="reminder-emoji">
           <Icon icon="solar:stretching-round-bold-duotone" width={56} />
         </div>
-        <h2>Waktunya Stretching!</h2>
-        <p>
-          Kamu sudah duduk terlalu lama. Yuk lakukan peregangan untuk mengurangi
-          nyeri punggung bawah.
-        </p>
+        <h2>{t("reminderTitle")}</h2>
+        <p>{t("reminderDesc")}</p>
 
         {exercise && (
           <div className="reminder-exercise">
@@ -119,10 +119,10 @@ function ReminderModal({ exercise, onDone, onSnooze }) {
                 width={18}
                 style={{ verticalAlign: "middle", marginRight: 6 }}
               />
-              {exercise.nameId}
+              {exercise.name}
             </h3>
             <div className="exercise-meta" style={{ marginTop: 4 }}>
-              {exercise.reps} · {exercise.duration} detik
+              {exercise.reps} · {exercise.duration} {t("seconds")}
             </div>
             <ul className="exercise-steps" style={{ marginTop: 10 }}>
               {exercise.steps.map((step, i) => (
@@ -139,7 +139,7 @@ function ReminderModal({ exercise, onDone, onSnooze }) {
               width={18}
               style={{ verticalAlign: "middle", marginRight: 6 }}
             />
-            Sudah Stretching!
+            {t("doneStretching")}
           </button>
           <button className="btn btn-secondary" onClick={() => onSnooze(5)}>
             <Icon
@@ -147,10 +147,10 @@ function ReminderModal({ exercise, onDone, onSnooze }) {
               width={18}
               style={{ verticalAlign: "middle", marginRight: 6 }}
             />
-            Ingatkan 5 menit lagi
+            {t("remindIn5")}
           </button>
           <button className="btn btn-ghost" onClick={() => onSnooze(10)}>
-            Nanti 10 menit
+            {t("remindIn10")}
           </button>
         </div>
       </div>
@@ -159,52 +159,70 @@ function ReminderModal({ exercise, onDone, onSnooze }) {
 }
 
 function SettingsPanel({ state, onSetInterval, onSetIdle, onToggle }) {
+  const { t, lang, changeLang } = useLanguage();
+
   return (
     <div className="settings-panel">
       <div className="setting-item">
         <div>
-          <div className="setting-label">Interval Pengingat</div>
-          <div className="setting-desc">Waktu duduk sebelum diingatkan</div>
+          <div className="setting-label">{t("language")}</div>
+          <div className="setting-desc">{t("languageDesc")}</div>
+        </div>
+        <div className="setting-control">
+          <select value={lang} onChange={(e) => changeLang(e.target.value)}>
+            {LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="setting-item">
+        <div>
+          <div className="setting-label">{t("reminderInterval")}</div>
+          <div className="setting-desc">{t("reminderIntervalDesc")}</div>
         </div>
         <div className="setting-control">
           <select
             value={state.interval_minutes}
             onChange={(e) => onSetInterval(Number(e.target.value))}
           >
-            <option value={15}>15 mnt</option>
-            <option value={20}>20 mnt</option>
-            <option value={25}>25 mnt</option>
-            <option value={30}>30 mnt</option>
-            <option value={45}>45 mnt</option>
-            <option value={60}>60 mnt</option>
+            <option value={15}>15 {t("min")}</option>
+            <option value={20}>20 {t("min")}</option>
+            <option value={25}>25 {t("min")}</option>
+            <option value={30}>30 {t("min")}</option>
+            <option value={45}>45 {t("min")}</option>
+            <option value={60}>60 {t("min")}</option>
           </select>
         </div>
       </div>
 
       <div className="setting-item">
         <div>
-          <div className="setting-label">Deteksi Stretching</div>
-          <div className="setting-desc">Idle time = sedang stretching</div>
+          <div className="setting-label">{t("stretchDetection")}</div>
+          <div className="setting-desc">{t("stretchDetectionDesc")}</div>
         </div>
         <div className="setting-control">
           <select
             value={state.idle_threshold_secs}
             onChange={(e) => onSetIdle(Number(e.target.value))}
           >
-            <option value={60}>1 mnt</option>
-            <option value={90}>1.5 mnt</option>
-            <option value={120}>2 mnt</option>
-            <option value={180}>3 mnt</option>
-            <option value={300}>5 mnt</option>
+            <option value={60}>1 {t("min")}</option>
+            <option value={90}>1.5 {t("min")}</option>
+            <option value={120}>2 {t("min")}</option>
+            <option value={180}>3 {t("min")}</option>
+            <option value={300}>5 {t("min")}</option>
           </select>
         </div>
       </div>
 
       <div className="setting-item">
         <div>
-          <div className="setting-label">Monitoring</div>
+          <div className="setting-label">{t("monitoring")}</div>
           <div className="setting-desc">
-            {state.is_active ? "Sedang aktif memantau" : "Dijeda"}
+            {state.is_active ? t("activelyMonitoring") : t("paused")}
           </div>
         </div>
         <div className="setting-control">
@@ -213,7 +231,7 @@ function SettingsPanel({ state, onSetInterval, onSetIdle, onToggle }) {
             style={{ padding: "6px 14px", fontSize: 13 }}
             onClick={onToggle}
           >
-            {state.is_active ? "Jeda" : "Mulai"}
+            {state.is_active ? t("pause") : t("start")}
           </button>
         </div>
       </div>
@@ -221,7 +239,10 @@ function SettingsPanel({ state, onSetInterval, onSetIdle, onToggle }) {
   );
 }
 
-export default function App() {
+function AppContent() {
+  const { t, lang } = useLanguage();
+  const tabs = [t("tabTimer"), t("tabExercises"), t("tabHistory")];
+
   const [tab, setTab] = useState(0);
   const [state, setState] = useState({
     interval_minutes: 30,
@@ -240,6 +261,12 @@ export default function App() {
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "system",
   );
+
+  const themeLabels = {
+    system: t("themeSystem"),
+    light: t("themeLight"),
+    dark: t("themeDark"),
+  };
 
   useEffect(() => {
     if (theme === "system") {
@@ -271,20 +298,19 @@ export default function App() {
     }).then((u) => unlisteners.push(u));
 
     listen("stretch-reminder", () => {
-      setReminderExercise(getQuickExercise());
+      setReminderExercise(getQuickExercise(lang));
       setShowReminder(true);
     }).then((u) => unlisteners.push(u));
 
     listen("stretch-completed", () => {
       setShowReminder(false);
-      // Refresh state
       invoke("get_state").then(setState);
     }).then((u) => unlisteners.push(u));
 
     return () => {
       unlisteners.forEach((fn) => fn());
     };
-  }, []);
+  }, [lang]);
 
   const handleDone = useCallback(async () => {
     await invoke("mark_stretch_done");
@@ -319,6 +345,7 @@ export default function App() {
   }, []);
 
   const totalSecs = state.interval_minutes * 60;
+  const exercises = getExercises(lang);
 
   return (
     <div className="app">
@@ -336,14 +363,14 @@ export default function App() {
           <button
             className="icon-btn"
             onClick={cycleTheme}
-            title={`Mode: ${THEME_LABELS[theme]}`}
+            title={`Mode: ${themeLabels[theme]}`}
           >
             <Icon icon={THEME_ICONS[theme]} width={18} />
           </button>
           <button
             className="icon-btn"
             onClick={() => setShowSettings(!showSettings)}
-            title="Settings"
+            title={t("settings")}
           >
             <Icon icon="solar:settings-bold-duotone" width={18} />
           </button>
@@ -362,13 +389,13 @@ export default function App() {
 
       {/* Tab Navigation */}
       <div className="tab-nav">
-        {TABS.map((t, i) => (
+        {tabs.map((tabName, i) => (
           <button
-            key={t}
+            key={i}
             className={`tab-btn ${tab === i ? "active" : ""}`}
             onClick={() => setTab(i)}
           >
-            {t}
+            {tabName}
           </button>
         ))}
       </div>
@@ -397,10 +424,10 @@ export default function App() {
                 className={`status-dot ${state.is_active ? "pulse" : ""}`}
               />
               {!state.is_active
-                ? "Dijeda"
+                ? t("paused")
                 : state.is_idle
                   ? `Idle ${formatTime(state.idle_duration_secs)}`
-                  : "Memantau aktivitas"}
+                  : t("monitoringActivity")}
             </div>
           </div>
 
@@ -408,23 +435,23 @@ export default function App() {
           <div className="stats-row">
             <div className="stat-card">
               <div className="stat-value">{state.stretches_today}</div>
-              <div className="stat-label">Stretching</div>
+              <div className="stat-label">{t("stretching")}</div>
             </div>
             <div className="stat-card">
               <div className="stat-value">{state.interval_minutes}m</div>
-              <div className="stat-label">Interval</div>
+              <div className="stat-label">{t("interval")}</div>
             </div>
             <div className="stat-card">
               <div className="stat-value">
                 {Math.round(state.idle_threshold_secs / 60)}m
               </div>
-              <div className="stat-label">Idle Goal</div>
+              <div className="stat-label">{t("idleGoal")}</div>
             </div>
           </div>
 
           {/* Quick Exercise Suggestion */}
-          <div className="section-title">Latihan Berikutnya</div>
-          <ExerciseCard exercise={getQuickExercise()} />
+          <div className="section-title">{t("nextExercise")}</div>
+          <ExerciseCard exercise={getQuickExercise(lang)} />
         </>
       )}
 
@@ -432,7 +459,7 @@ export default function App() {
       {tab === 1 && (
         <>
           <div className="section-title">
-            Semua Gerakan Stretching LBP ({exercises.length})
+            {t("allExercises")} ({exercises.length})
           </div>
           {exercises.map((ex) => (
             <ExerciseCard key={ex.id} exercise={ex} />
@@ -443,7 +470,7 @@ export default function App() {
       {/* Tab: Riwayat */}
       {tab === 2 && (
         <>
-          <div className="section-title">Riwayat Hari Ini</div>
+          <div className="section-title">{t("todayHistory")}</div>
           {state.stretch_history.length === 0 ? (
             <div
               style={{
@@ -455,9 +482,9 @@ export default function App() {
               <div style={{ fontSize: 48, marginBottom: 12 }}>
                 <Icon icon="solar:leaf-bold-duotone" width={48} />
               </div>
-              <p>Belum ada stretching hari ini.</p>
+              <p>{t("noStretchYet")}</p>
               <p style={{ fontSize: 13, marginTop: 4 }}>
-                Mulai stretching pertamamu!
+                {t("startFirstStretch")}
               </p>
             </div>
           ) : (
@@ -491,11 +518,11 @@ export default function App() {
                     marginTop: 4,
                   }}
                 >
-                  kali stretching hari ini
+                  {t("timesStretchedToday")}
                 </div>
               </div>
 
-              <div className="section-title">Waktu Stretching</div>
+              <div className="section-title">{t("stretchTimes")}</div>
               <div className="history-list">
                 {state.stretch_history.map((time, i) => (
                   <span key={i} className="history-chip">
@@ -522,5 +549,13 @@ export default function App() {
         />
       )}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }

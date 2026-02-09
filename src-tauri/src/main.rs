@@ -318,7 +318,7 @@ fn main() {
                     if !state.is_active {
                         // Still update tray when paused, but only once
                         if last_tray_status != 0 {
-                            let _ = monitor_handle.tray_handle().set_title("Dijeda");
+                            let _ = monitor_handle.tray_handle().set_title("Paused");
                             let _ = monitor_handle.tray_handle().set_icon(tauri::Icon::Raw(
                                 include_bytes!("../icons/tray-paused.png").to_vec(),
                             ));
@@ -368,8 +368,8 @@ fn main() {
                         let _ = tauri::api::notification::Notification::new(
                             &monitor_handle.config().tauri.bundle.identifier,
                         )
-                        .title("Waktunya Stretching!")
-                        .body("Kamu sudah duduk terlalu lama. Yuk stretching untuk punggungmu!")
+                        .title("Time to Stretch!")
+                        .body("You've been sitting too long. Let's stretch for your back!")
                         .show();
                     }
 

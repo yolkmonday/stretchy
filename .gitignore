@@ -1,5 +1,4 @@
-node_modules/
+.build/
 dist/
-src-tauri/target/
 .DS_Store
-*.log
+.swiftpm/

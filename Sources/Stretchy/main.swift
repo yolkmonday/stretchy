@@ -28,6 +28,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             MainActor.assumeIsolated { self.tick() }
         }
         render()
+        // Dev: `Stretchy --preview [index]` opens the overlay right away.
+        if let i = CommandLine.arguments.firstIndex(of: "--preview") {
+            if let n = CommandLine.arguments.dropFirst(i + 1).first.flatMap({ Int($0) }) { nextExercise = n }
+            stretchNow()
+        }
     }
 
     private func tick() {
@@ -147,7 +152,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
 if CommandLine.arguments.contains("--selftest") {
     Tracker.selfTest()
-    precondition(Exercise.all.count == 8)
+    precondition(Exercise.all.count == 6 && Exercise.all.allSatisfy { $0.frames.count == 2 })
+    let cat = Exercise.all[0]
+    precondition(cat.plan.count == 12 && cat.duration == 36, "6 reps × (3s + 3s)")
+    precondition(Exercise.all[2].plan.map(\.side) == [0, 1], "twist: one hold per side")
+    print("exercises OK:", Exercise.all.map { "\($0.image) \($0.duration)s" }.joined(separator: ", "))
     exit(0)
 }
 

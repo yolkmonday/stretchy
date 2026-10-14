@@ -69,52 +69,25 @@ private struct ReminderView: View {
 
     // MARK: Layout
 
+    private var accent: Color { phase == .ready ? .orange : .green }
+
+    /// Same card for both phases; the ready phase is told apart by orange color,
+    /// a "Preview" badge on the looping illustration and a "Starts in" label.
     private func card(_ ex: Exercise) -> some View {
-        Group {
-            if phase == .ready { readyView(ex).transition(.opacity) }
-            else { exerciseCard(ex).transition(.opacity.combined(with: .scale(scale: 0.97))) }
-        }
-        .foregroundStyle(.white)
-        .task { await run(ex) }
-    }
-
-    /// Prep phase: no illustration, so the countdown can't be mistaken for the stretch timer.
-    private func readyView(_ ex: Exercise) -> some View {
-        VStack(spacing: 28) {
-            Text(L("Get ready", "Bersiap")).font(.system(size: 28, weight: .semibold)).foregroundStyle(.orange)
-            Text("\(left)")
-                .font(.system(size: 160, weight: .bold).monospacedDigit())
-                .contentTransition(.numericText(countsDown: true))
-                .animation(.snappy, value: left)
-            VStack(spacing: 8) {
-                Text(L("Next up", "Gerakan berikutnya")).font(.headline).foregroundStyle(.secondary)
-                Text(ex.name.value).font(.system(size: 36, weight: .bold))
-            }
-            HStack(spacing: 12) {
-                Button(L("Start now", "Mulai sekarang")) { left = 0 }
-                    .keyboardShortcut(.defaultAction)
-                    .buttonStyle(.borderedProminent).tint(.orange)
-                Button(L("Snooze 5 min", "Tunda 5 menit")) { onSnooze(5) }
-                Button(L("Snooze 10 min", "Tunda 10 menit")) { onSnooze(10) }
-            }
-            .controlSize(.large)
-            .padding(.top, 8)
-        }
-        .accessibilityElement(children: .contain)
-    }
-
-    private func exerciseCard(_ ex: Exercise) -> some View {
         HStack(alignment: .center, spacing: 48) {
             illustration(ex)
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 6) {
+                    if phase == .ready {
+                        Text(L("Next up", "Gerakan berikutnya")).font(.headline).foregroundStyle(.orange)
+                    }
                     Text(ex.name.value).font(.system(size: 38, weight: .bold))
                     Text(ex.reps.value).font(.title3).foregroundStyle(.secondary)
                 }
                 VStack(alignment: .leading, spacing: 10) {
                     ForEach(Array(ex.steps.value.enumerated()), id: \.offset) { i, step in
                         HStack(alignment: .firstTextBaseline, spacing: 12) {
-                            Text("\(i + 1)").font(.headline.monospacedDigit()).foregroundStyle(.green)
+                            Text("\(i + 1)").font(.headline.monospacedDigit()).foregroundStyle(accent)
                             Text(step).font(.title3).fixedSize(horizontal: false, vertical: true)
                         }
                     }
@@ -123,13 +96,13 @@ private struct ReminderView: View {
                 HStack(spacing: 20) {
                     counter(ex)
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(phase == .done ? L("Nice work!", "Mantap!") : cue)
-                            .font(.title2.bold()).foregroundStyle(.green)
+                        Text(headline)
+                            .font(.title2.bold()).foregroundStyle(accent)
                             .fixedSize(horizontal: false, vertical: true)
                             .contentTransition(.opacity)
                         Text(progressText(ex)).font(.headline.monospacedDigit()).foregroundStyle(.secondary)
                     }
-                    .animation(.easeInOut(duration: 0.3), value: cue)
+                    .animation(.easeInOut(duration: 0.3), value: headline)
                 }
                 buttons
             }
@@ -137,6 +110,17 @@ private struct ReminderView: View {
         }
         .padding(44)
         .background(.black.opacity(0.3), in: RoundedRectangle(cornerRadius: 36, style: .continuous))
+        .foregroundStyle(.white)
+        .animation(.easeInOut(duration: 0.4), value: phase)
+        .task { await run(ex) }
+    }
+
+    private var headline: String {
+        switch phase {
+        case .ready: L("Starts in \(left)…", "Mulai dalam \(left)…")
+        case .stretch: cue
+        case .done: L("Nice work!", "Mantap!")
+        }
     }
 
     /// White card matching the illustration background, so the art never looks cropped.
@@ -153,27 +137,42 @@ private struct ReminderView: View {
         .frame(width: 400, height: 500)
         .background(.white, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .overlay(alignment: .topLeading) {
-            if ex.sides == true, phase == .stretch {
-                Text(side == 0 ? L("Side 1 of 2", "Sisi 1 dari 2") : L("Side 2 of 2", "Sisi 2 dari 2"))
-                    .font(.callout.bold()).foregroundStyle(.white)
-                    .padding(.horizontal, 12).padding(.vertical, 6)
-                    .background(.green, in: Capsule())
-                    .padding(16)
+            if phase == .ready {
+                badge(L("Preview", "Contoh gerakan"), systemImage: "eye")
+            } else if ex.sides == true, phase == .stretch {
+                badge(side == 0 ? L("Side 1 of 2", "Sisi 1 dari 2") : L("Side 2 of 2", "Sisi 2 dari 2"))
             }
         }
         .accessibilityElement()
         .accessibilityLabel(ex.name.value)
     }
 
-    /// Big number = seconds left in the current beat; ring = progress of the whole exercise.
+    private func badge(_ text: String, systemImage: String? = nil) -> some View {
+        Label {
+            Text(text)
+        } icon: {
+            if let systemImage { Image(systemName: systemImage) }
+        }
+        .font(.callout.bold()).foregroundStyle(.white)
+        .padding(.horizontal, 12).padding(.vertical, 6)
+        .background(accent, in: Capsule())
+        .padding(16)
+    }
+
+    /// Big number = seconds left in the current beat (or prep); ring = overall progress.
     private func counter(_ ex: Exercise) -> some View {
-        ZStack {
+        let progress: CGFloat = switch phase {
+        case .ready: CGFloat(left) / CGFloat(Self.prep)
+        case .stretch: 1 - CGFloat(totalLeft) / CGFloat(ex.duration)
+        case .done: 1
+        }
+        return ZStack {
             Circle().stroke(.white.opacity(0.12), lineWidth: 10)
             Circle()
-                .trim(from: 0, to: phase == .done ? 1 : 1 - CGFloat(totalLeft) / CGFloat(ex.duration))
-                .stroke(.green, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                .trim(from: 0, to: progress)
+                .stroke(accent, style: StrokeStyle(lineWidth: 10, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .animation(.linear(duration: 1), value: totalLeft)
+                .animation(.linear(duration: 1), value: progress)
             if phase == .done {
                 Image(systemName: "checkmark").font(.system(size: 40, weight: .bold))
             } else {
@@ -187,6 +186,9 @@ private struct ReminderView: View {
 
     private func progressText(_ ex: Exercise) -> String {
         if phase == .done { return L("Press Done to continue", "Tekan Selesai untuk lanjut") }
+        if phase == .ready {
+            return String(format: L("Watch the preview · takes %d sec", "Lihat contoh gerakannya · durasi %d detik"), ex.duration)
+        }
         var parts: [String] = []
         if ex.move.times > 1 { parts.append(L("Rep", "Ulangan") + " \(rep)/\(ex.move.times)") }
         parts.append(String(format: L("%d:%02d left", "sisa %d:%02d"), totalLeft / 60, totalLeft % 60))
@@ -196,9 +198,15 @@ private struct ReminderView: View {
     private var buttons: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 12) {
-                Button(L("Done", "Selesai"), action: onDone)
-                    .keyboardShortcut(.defaultAction)
-                    .buttonStyle(.borderedProminent).tint(.green)
+                if phase == .ready {
+                    Button(L("Start now", "Mulai sekarang")) { left = 0 }
+                        .keyboardShortcut(.defaultAction)
+                        .buttonStyle(.borderedProminent).tint(.orange)
+                } else {
+                    Button(L("Done", "Selesai"), action: onDone)
+                        .keyboardShortcut(.defaultAction)
+                        .buttonStyle(.borderedProminent).tint(.green)
+                }
                 Button(L("Snooze 5 min", "Tunda 5 menit")) { onSnooze(5) }
                 Button(L("Snooze 10 min", "Tunda 10 menit")) { onSnooze(10) }
             }
@@ -212,7 +220,14 @@ private struct ReminderView: View {
     // MARK: Timeline
 
     private func run(_ ex: Exercise) async {
+        // Preview: loop start/end pose while the prep countdown runs.
+        let preview = Task { @MainActor in
+            while (try? await Task.sleep(for: .seconds(1.5))) != nil {
+                withAnimation(.easeInOut(duration: 0.9)) { pose = 1 - pose }
+            }
+        }
         await countdown(Self.prep)
+        preview.cancel()
         guard !Task.isCancelled else { return }
 
         totalLeft = ex.duration

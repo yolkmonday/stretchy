@@ -14,6 +14,8 @@ struct Exercise: Decodable {
         let pose: Int
         let secs: Int
         let cue: Localized<String>
+        /// Show the illustration flipped (e.g. "look left" reusing the "look right" pose).
+        var mirror: Bool? = nil
     }
 
     struct Move: Decodable {
@@ -22,6 +24,7 @@ struct Exercise: Decodable {
     }
 
     let name: Localized<String>
+    let area: Localized<String>
     let reps: Localized<String>
     let steps: Localized<[String]>
     let benefit: Localized<String>

@@ -8,7 +8,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var tracker: Tracker!
     private let overlay = Overlay()
     private var paused = false
-    private var nextExercise = 0
+    /// Rotates through the list (ordered to alternate body areas); persisted across launches.
+    private var nextExercise: Int {
+        get { defaults.integer(forKey: "nextExercise") }
+        set { defaults.set(newValue % Exercise.all.count, forKey: "nextExercise") }
+    }
 
     private var interval: Int { defaults.integer(forKey: "intervalMin") }
     private var idleGoal: Int { defaults.integer(forKey: "idleMin") }
@@ -16,7 +20,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidFinishLaunching(_ n: Notification) {
         defaults.register(defaults: ["intervalMin": 30, "idleMin": 2])
         tracker = Tracker(interval: interval * 60, idleGoal: idleGoal * 60)
-        nextExercise = Int.random(in: 0..<Exercise.all.count)
 
         item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         item.button?.image = NSImage(systemSymbolName: "figure.flexibility", accessibilityDescription: "Stretchy")
@@ -35,11 +38,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
     }
 
+    private var snapshot = Tracker.Snapshot(idle: 0)
+
     private func tick() {
+        let idle = Presence.inputIdle
+        // Cheap signal first; the others only matter once input has gone quiet.
+        let quiet = idle >= 5
+        snapshot = Tracker.Snapshot(
+            idle: idle,
+            screenOff: Presence.screenOff,
+            watching: quiet && Presence.displayKeptAwake,
+            inCall: quiet && Presence.micInUse)
         if !paused {
-            // kCGAnyInputEventType: no Accessibility permission needed.
-            let idle = CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: CGEventType(rawValue: ~0)!)
-            switch tracker.tick(idle: idle) {
+            switch tracker.tick(snapshot) {
             case .remind: remind()
             case .stretched: finish()
             case nil: break
@@ -80,6 +91,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         render()
     }
 
+    private var statusText: String {
+        let s = snapshot
+        if paused { return L("paused", "dijeda") }
+        if s.screenOff { return L("away (screen locked/off)", "tidak di depan laptop (layar terkunci/mati)") }
+        if tracker.isAway(s) { return L("away (no activity)", "tidak di depan laptop (tidak ada aktivitas)") }
+        if tracker.held { return L("in a call, reminder after it ends", "sedang meeting, diingatkan setelah selesai") }
+        if s.inCall { return L("in a call", "sedang meeting/telepon") }
+        if s.watching { return L("watching video", "menonton video") }
+        if s.idle < 5 { return L("active (typing/mouse)", "aktif (mengetik/mouse)") }
+        return L("reading (timer paused)", "membaca (timer berhenti sebentar)")
+    }
+
     // MARK: Menu, rebuilt each time it opens
 
     func menuNeedsUpdate(_ menu: NSMenu) {
@@ -90,6 +113,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(withTitle: paused ? L("Paused", "Dijeda")
                      : L("Next stretch in ", "Stretching berikutnya ") + String(format: "%d:%02d", r / 60, r % 60),
                      action: nil, keyEquivalent: "")
+        menu.addItem(withTitle: L("Status: ", "Status: ") + statusText, action: nil, keyEquivalent: "")
         menu.addItem(withTitle: L("Stretches today: ", "Stretching hari ini: ") + "\(today)", action: nil, keyEquivalent: "")
         menu.addItem(.separator())
         add(menu, L("Stretch now", "Stretching sekarang"), #selector(stretchNow), "s")
@@ -150,12 +174,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 }
 
+if CommandLine.arguments.contains("--presence") {
+    print("inputIdle=\(Int(Presence.inputIdle))s screenOff=\(Presence.screenOff) watching=\(Presence.displayKeptAwake) inCall=\(Presence.micInUse)")
+    exit(0)
+}
+
 if CommandLine.arguments.contains("--selftest") {
     Tracker.selfTest()
-    precondition(Exercise.all.count == 6 && Exercise.all.allSatisfy { $0.frames.count == 2 })
-    let cat = Exercise.all[0]
+    precondition(Exercise.all.count == 17 && Exercise.all.allSatisfy { $0.frames.count == 2 })
+    let byName = Dictionary(uniqueKeysWithValues: Exercise.all.map { ($0.image, $0) })
+    let cat = byName["seated-cat-cow"]!
     precondition(cat.plan.count == 12 && cat.duration == 36, "6 reps × (3s + 3s)")
-    precondition(Exercise.all[2].plan.map(\.side) == [0, 1], "twist: one hold per side")
+    precondition(byName["twist"]!.plan.map(\.side) == [0, 1], "twist: one hold per side")
+    precondition(byName["neck-turn"]!.plan.filter { $0.beat.mirror == true }.count == 3, "neck-turn: left turn mirrored")
     print("exercises OK:", Exercise.all.map { "\($0.image) \($0.duration)s" }.joined(separator: ", "))
     exit(0)
 }

@@ -1,5 +1,52 @@
 [
   {
+    "image": "neck-tilt",
+    "sides": true,
+    "name": {
+      "en": "Neck Side Stretch",
+      "id": "Regang Leher Samping"
+    },
+    "reps": {
+      "en": "Hold 15 sec per side",
+      "id": "Tahan 15 detik tiap sisi"
+    },
+    "steps": {
+      "en": [
+        "Sit tall, relax your shoulders down",
+        "Tilt your ear toward your shoulder",
+        "Rest your hand on your head, no pulling",
+        "Then switch sides"
+      ],
+      "id": [
+        "Duduk tegak, turunkan bahu dengan santai",
+        "Miringkan telinga ke arah bahu",
+        "Letakkan tangan di kepala, jangan ditarik",
+        "Lalu ganti sisi"
+      ]
+    },
+    "benefit": {
+      "en": "Eases neck tension from screen work",
+      "id": "Meredakan tegang leher karena lama menatap layar"
+    },
+    "move": {
+      "times": 1,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 15,
+          "cue": {
+            "en": "Tilt and hold, breathe",
+            "id": "Miringkan dan tahan, bernapas"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Neck",
+      "id": "Leher"
+    }
+  },
+  {
     "image": "seated-cat-cow",
     "name": {
       "en": "Seated Cat-Cow",
@@ -45,6 +92,470 @@
           }
         }
       ]
+    },
+    "area": {
+      "en": "Spine",
+      "id": "Tulang belakang"
+    }
+  },
+  {
+    "image": "wrist-stretch",
+    "sides": true,
+    "name": {
+      "en": "Wrist & Forearm Stretch",
+      "id": "Regang Pergelangan Tangan"
+    },
+    "reps": {
+      "en": "Hold 15 sec per side",
+      "id": "Tahan 15 detik tiap sisi"
+    },
+    "steps": {
+      "en": [
+        "Extend one arm forward, palm up",
+        "With the other hand, gently pull the fingers down and back",
+        "Keep the elbow straight",
+        "Then switch sides"
+      ],
+      "id": [
+        "Luruskan satu lengan ke depan, telapak menghadap atas",
+        "Dengan tangan lain, tarik jari ke bawah dan ke arah badan",
+        "Siku tetap lurus",
+        "Lalu ganti sisi"
+      ]
+    },
+    "benefit": {
+      "en": "Relief for typing and mouse use",
+      "id": "Meredakan pegal karena mengetik dan memakai mouse"
+    },
+    "move": {
+      "times": 1,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 15,
+          "cue": {
+            "en": "Pull fingers back, hold",
+            "id": "Tarik jari, tahan"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Wrists & forearms",
+      "id": "Pergelangan & lengan"
+    }
+  },
+  {
+    "image": "hip-flexor",
+    "name": {
+      "en": "Standing Hip Flexor Stretch",
+      "id": "Regang Pinggul Berdiri"
+    },
+    "reps": {
+      "en": "Hold 20 sec per side",
+      "id": "Tahan 20 detik tiap sisi"
+    },
+    "steps": {
+      "en": [
+        "Stand with one foot forward, hands on hips",
+        "Tuck your tailbone, gently push your hips forward",
+        "Feel the stretch at the front of your back hip",
+        "Then switch sides"
+      ],
+      "id": [
+        "Berdiri dengan satu kaki di depan, tangan di pinggang",
+        "Tarik tulang ekor ke bawah, dorong pinggul ke depan perlahan",
+        "Rasakan tarikan di depan pinggul kaki belakang",
+        "Lalu ganti sisi"
+      ]
+    },
+    "benefit": {
+      "en": "Sitting shortens the hip flexors, which pull on the lower back",
+      "id": "Duduk membuat otot pinggul memendek dan menarik punggung bawah"
+    },
+    "sides": true,
+    "move": {
+      "times": 1,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 20,
+          "cue": {
+            "en": "Push hips forward and hold",
+            "id": "Dorong pinggul ke depan dan tahan"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Hips",
+      "id": "Pinggul"
+    }
+  },
+  {
+    "image": "chest-opener",
+    "name": {
+      "en": "Chest Opener",
+      "id": "Buka Dada"
+    },
+    "reps": {
+      "en": "Hold 5 sec · 4 times",
+      "id": "Tahan 5 detik · 4 kali"
+    },
+    "steps": {
+      "en": [
+        "Stand tall, clasp your hands behind your back",
+        "Straighten your arms and lift them slightly",
+        "Open your chest, squeeze your shoulder blades"
+      ],
+      "id": [
+        "Berdiri tegak, genggam kedua tangan di belakang punggung",
+        "Luruskan lengan dan angkat sedikit",
+        "Busungkan dada, rapatkan tulang belikat"
+      ]
+    },
+    "benefit": {
+      "en": "Counters rounded shoulders",
+      "id": "Melawan bahu yang membungkuk ke depan"
+    },
+    "move": {
+      "times": 4,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 5,
+          "cue": {
+            "en": "Open chest, hold",
+            "id": "Buka dada, tahan"
+          }
+        },
+        {
+          "pose": 0,
+          "secs": 2,
+          "cue": {
+            "en": "Relax",
+            "id": "Lemaskan"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Chest & shoulders",
+      "id": "Dada & bahu"
+    }
+  },
+  {
+    "image": "seated-hamstring",
+    "sides": true,
+    "name": {
+      "en": "Seated Hamstring Stretch",
+      "id": "Regang Paha Belakang"
+    },
+    "reps": {
+      "en": "Hold 20 sec per side",
+      "id": "Tahan 20 detik tiap sisi"
+    },
+    "steps": {
+      "en": [
+        "Sit on the front edge, one leg straight, heel down, toes up",
+        "Keep your back straight",
+        "Hinge forward from the hips until you feel the back of the thigh",
+        "Then switch legs"
+      ],
+      "id": [
+        "Duduk di ujung kursi, satu kaki lurus, tumit di lantai, jari kaki ke atas",
+        "Punggung tetap lurus",
+        "Condongkan badan dari pinggul sampai paha belakang terasa tertarik",
+        "Lalu ganti kaki"
+      ]
+    },
+    "benefit": {
+      "en": "Tight hamstrings pull on the pelvis and lower back",
+      "id": "Paha belakang yang kaku menarik panggul dan punggung bawah"
+    },
+    "move": {
+      "times": 1,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 20,
+          "cue": {
+            "en": "Hinge forward and hold",
+            "id": "Condong ke depan dan tahan"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Back of thighs",
+      "id": "Paha belakang"
+    }
+  },
+  {
+    "image": "twist",
+    "name": {
+      "en": "Seated Twist",
+      "id": "Putar Badan Duduk"
+    },
+    "reps": {
+      "en": "Hold 15 sec per side",
+      "id": "Tahan 15 detik tiap sisi"
+    },
+    "steps": {
+      "en": [
+        "Sit tall, feet flat on the floor",
+        "Right hand on left knee, left hand on the backrest",
+        "Turn to the left and look over your shoulder",
+        "Then switch sides"
+      ],
+      "id": [
+        "Duduk tegak, telapak kaki rata di lantai",
+        "Tangan kanan di lutut kiri, tangan kiri di sandaran kursi",
+        "Putar badan ke kiri, lihat ke belakang lewat bahu",
+        "Lalu ganti sisi"
+      ]
+    },
+    "benefit": {
+      "en": "Loosens the lower back and obliques",
+      "id": "Melemaskan punggung bawah dan otot samping perut"
+    },
+    "sides": true,
+    "move": {
+      "times": 1,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 15,
+          "cue": {
+            "en": "Twist and hold, keep breathing",
+            "id": "Putar dan tahan, tetap bernapas"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Lower back",
+      "id": "Punggung bawah"
+    }
+  },
+  {
+    "image": "neck-turn",
+    "name": {
+      "en": "Neck Turn",
+      "id": "Tengok Kanan Kiri"
+    },
+    "reps": {
+      "en": "3 slow turns per side",
+      "id": "3 kali pelan tiap sisi"
+    },
+    "steps": {
+      "en": [
+        "Sit tall, look straight ahead",
+        "Slowly turn your head to look over one shoulder",
+        "Return to center, then turn to the other side"
+      ],
+      "id": [
+        "Duduk tegak, pandangan lurus ke depan",
+        "Putar kepala perlahan, lihat ke arah bahu",
+        "Kembali ke tengah, lalu ke sisi lainnya"
+      ]
+    },
+    "benefit": {
+      "en": "Restores neck mobility",
+      "id": "Mengembalikan kelenturan leher"
+    },
+    "move": {
+      "times": 3,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 3,
+          "cue": {
+            "en": "Turn to one side",
+            "id": "Tengok ke satu sisi"
+          }
+        },
+        {
+          "pose": 0,
+          "secs": 2,
+          "cue": {
+            "en": "Back to center",
+            "id": "Kembali ke tengah"
+          }
+        },
+        {
+          "pose": 1,
+          "secs": 3,
+          "mirror": true,
+          "cue": {
+            "en": "Turn to the other side",
+            "id": "Tengok ke sisi lain"
+          }
+        },
+        {
+          "pose": 0,
+          "secs": 2,
+          "cue": {
+            "en": "Back to center",
+            "id": "Kembali ke tengah"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Neck",
+      "id": "Leher"
+    }
+  },
+  {
+    "image": "figure-four",
+    "name": {
+      "en": "Seated Figure-4",
+      "id": "Angka 4 Duduk"
+    },
+    "reps": {
+      "en": "Hold 20 sec per side",
+      "id": "Tahan 20 detik tiap sisi"
+    },
+    "steps": {
+      "en": [
+        "Sit tall, put your right ankle on your left knee",
+        "Keep your back straight, slowly lean forward",
+        "Feel the stretch in your right hip and buttock",
+        "Then switch sides"
+      ],
+      "id": [
+        "Duduk tegak, letakkan pergelangan kaki kanan di lutut kiri",
+        "Punggung tetap lurus, condongkan badan ke depan perlahan",
+        "Rasakan tarikan di pinggul dan bokong kanan",
+        "Lalu ganti sisi"
+      ]
+    },
+    "benefit": {
+      "en": "Releases a tight piriformis, a common cause of back and sciatic pain",
+      "id": "Melemaskan otot piriformis yang sering memicu nyeri punggung dan sciatica"
+    },
+    "sides": true,
+    "move": {
+      "times": 1,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 20,
+          "cue": {
+            "en": "Lean forward and hold",
+            "id": "Condong ke depan dan tahan"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Hips & glutes",
+      "id": "Pinggul & bokong"
+    }
+  },
+  {
+    "image": "shoulder-shrug",
+    "name": {
+      "en": "Shoulder Shrugs",
+      "id": "Angkat Bahu"
+    },
+    "reps": {
+      "en": "8 times",
+      "id": "8 kali"
+    },
+    "steps": {
+      "en": [
+        "Stand or sit, arms relaxed",
+        "Lift your shoulders up toward your ears",
+        "Hold a moment, then let them drop"
+      ],
+      "id": [
+        "Berdiri atau duduk, lengan santai",
+        "Angkat bahu ke arah telinga",
+        "Tahan sebentar, lalu jatuhkan"
+      ]
+    },
+    "benefit": {
+      "en": "Releases tight upper traps",
+      "id": "Melemaskan otot bahu atas yang tegang"
+    },
+    "move": {
+      "times": 8,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 2,
+          "cue": {
+            "en": "Shrug up",
+            "id": "Angkat bahu"
+          }
+        },
+        {
+          "pose": 0,
+          "secs": 2,
+          "cue": {
+            "en": "Drop and relax",
+            "id": "Turunkan, lemaskan"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Shoulders",
+      "id": "Bahu"
+    }
+  },
+  {
+    "image": "calf-raise",
+    "name": {
+      "en": "Calf Raises",
+      "id": "Jinjit"
+    },
+    "reps": {
+      "en": "10 times",
+      "id": "10 kali"
+    },
+    "steps": {
+      "en": [
+        "Stand behind your chair, hands on the backrest",
+        "Rise up onto your toes",
+        "Lower your heels slowly"
+      ],
+      "id": [
+        "Berdiri di belakang kursi, tangan di sandaran",
+        "Angkat badan dengan berjinjit",
+        "Turunkan tumit perlahan"
+      ]
+    },
+    "benefit": {
+      "en": "Gets blood moving in your legs",
+      "id": "Melancarkan aliran darah di kaki"
+    },
+    "move": {
+      "times": 10,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 2,
+          "cue": {
+            "en": "Up on your toes",
+            "id": "Jinjit"
+          }
+        },
+        {
+          "pose": 0,
+          "secs": 2,
+          "cue": {
+            "en": "Lower slowly",
+            "id": "Turun perlahan"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Calves",
+      "id": "Betis"
     }
   },
   {
@@ -93,13 +604,18 @@
           }
         }
       ]
+    },
+    "area": {
+      "en": "Lower back",
+      "id": "Punggung bawah"
     }
   },
   {
-    "image": "twist",
+    "image": "cross-body-shoulder",
+    "sides": true,
     "name": {
-      "en": "Seated Twist",
-      "id": "Putar Badan Duduk"
+      "en": "Cross-Body Shoulder Stretch",
+      "id": "Regang Bahu Silang"
     },
     "reps": {
       "en": "Hold 15 sec per side",
@@ -107,23 +623,22 @@
     },
     "steps": {
       "en": [
-        "Sit tall, feet flat on the floor",
-        "Right hand on left knee, left hand on the backrest",
-        "Turn to the left and look over your shoulder",
+        "Bring one arm straight across your chest",
+        "Hook the other forearm over it",
+        "Gently pull it closer, keep the shoulder down",
         "Then switch sides"
       ],
       "id": [
-        "Duduk tegak, telapak kaki rata di lantai",
-        "Tangan kanan di lutut kiri, tangan kiri di sandaran kursi",
-        "Putar badan ke kiri, lihat ke belakang lewat bahu",
+        "Bawa satu lengan lurus menyilang di depan dada",
+        "Kaitkan lengan lainnya di atasnya",
+        "Tarik pelan mendekat, bahu tetap turun",
         "Lalu ganti sisi"
       ]
     },
     "benefit": {
-      "en": "Loosens the lower back and obliques",
-      "id": "Melemaskan punggung bawah dan otot samping perut"
+      "en": "Loosens the back of the shoulder",
+      "id": "Melemaskan bahu bagian belakang"
     },
-    "sides": true,
     "move": {
       "times": 1,
       "beats": [
@@ -131,18 +646,23 @@
           "pose": 1,
           "secs": 15,
           "cue": {
-            "en": "Twist and hold, keep breathing",
-            "id": "Putar dan tahan, tetap bernapas"
+            "en": "Pull across and hold",
+            "id": "Tarik menyilang dan tahan"
           }
         }
       ]
+    },
+    "area": {
+      "en": "Shoulders",
+      "id": "Bahu"
     }
   },
   {
-    "image": "figure-four",
+    "image": "quad-stretch",
+    "sides": true,
     "name": {
-      "en": "Seated Figure-4",
-      "id": "Angka 4 Duduk"
+      "en": "Standing Quad Stretch",
+      "id": "Regang Paha Depan"
     },
     "reps": {
       "en": "Hold 20 sec per side",
@@ -150,23 +670,22 @@
     },
     "steps": {
       "en": [
-        "Sit tall, put your right ankle on your left knee",
-        "Keep your back straight, slowly lean forward",
-        "Feel the stretch in your right hip and buttock",
-        "Then switch sides"
+        "Stand next to your chair, hold it for balance",
+        "Bend one knee, hold your ankle behind you",
+        "Keep knees together, stand tall",
+        "Then switch legs"
       ],
       "id": [
-        "Duduk tegak, letakkan pergelangan kaki kanan di lutut kiri",
-        "Punggung tetap lurus, condongkan badan ke depan perlahan",
-        "Rasakan tarikan di pinggul dan bokong kanan",
-        "Lalu ganti sisi"
+        "Berdiri di samping kursi, pegang untuk keseimbangan",
+        "Tekuk satu lutut, pegang pergelangan kaki di belakang",
+        "Lutut tetap rapat, badan tegak",
+        "Lalu ganti kaki"
       ]
     },
     "benefit": {
-      "en": "Releases a tight piriformis, a common cause of back and sciatic pain",
-      "id": "Melemaskan otot piriformis yang sering memicu nyeri punggung dan sciatica"
+      "en": "Stretches the front of the thigh after long sitting",
+      "id": "Meregangkan paha depan setelah lama duduk"
     },
-    "sides": true,
     "move": {
       "times": 1,
       "beats": [
@@ -174,54 +693,114 @@
           "pose": 1,
           "secs": 20,
           "cue": {
-            "en": "Lean forward and hold",
-            "id": "Condong ke depan dan tahan"
+            "en": "Heel to glute, hold",
+            "id": "Tumit ke bokong, tahan"
           }
         }
       ]
+    },
+    "area": {
+      "en": "Front of thighs",
+      "id": "Paha depan"
     }
   },
   {
-    "image": "hip-flexor",
+    "image": "side-bend",
+    "sides": true,
     "name": {
-      "en": "Standing Hip Flexor Stretch",
-      "id": "Regang Pinggul Berdiri"
+      "en": "Standing Side Bend",
+      "id": "Tekuk Samping Berdiri"
     },
     "reps": {
-      "en": "Hold 20 sec per side",
-      "id": "Tahan 20 detik tiap sisi"
+      "en": "Hold 15 sec per side",
+      "id": "Tahan 15 detik tiap sisi"
     },
     "steps": {
       "en": [
-        "Stand with one foot forward, hands on hips",
-        "Tuck your tailbone, gently push your hips forward",
-        "Feel the stretch at the front of your back hip",
+        "Stand with feet hip-width apart",
+        "Raise one arm overhead, other hand on hip",
+        "Lean sideways, reaching over your head",
         "Then switch sides"
       ],
       "id": [
-        "Berdiri dengan satu kaki di depan, tangan di pinggang",
-        "Tarik tulang ekor ke bawah, dorong pinggul ke depan perlahan",
-        "Rasakan tarikan di depan pinggul kaki belakang",
+        "Berdiri, kaki selebar pinggul",
+        "Angkat satu lengan ke atas, tangan lain di pinggang",
+        "Condongkan badan ke samping, raih ke atas kepala",
         "Lalu ganti sisi"
       ]
     },
     "benefit": {
-      "en": "Sitting shortens the hip flexors, which pull on the lower back",
-      "id": "Duduk membuat otot pinggul memendek dan menarik punggung bawah"
+      "en": "Stretches the sides of your torso and lats",
+      "id": "Meregangkan sisi badan dan otot punggung samping"
     },
-    "sides": true,
     "move": {
       "times": 1,
       "beats": [
         {
           "pose": 1,
-          "secs": 20,
+          "secs": 15,
           "cue": {
-            "en": "Push hips forward and hold",
-            "id": "Dorong pinggul ke depan dan tahan"
+            "en": "Reach over and hold",
+            "id": "Raih ke samping dan tahan"
           }
         }
       ]
+    },
+    "area": {
+      "en": "Sides & torso",
+      "id": "Samping badan"
+    }
+  },
+  {
+    "image": "upper-back-reach",
+    "name": {
+      "en": "Upper Back Reach",
+      "id": "Regang Punggung Atas"
+    },
+    "reps": {
+      "en": "Hold 8 sec · 3 times",
+      "id": "Tahan 8 detik · 3 kali"
+    },
+    "steps": {
+      "en": [
+        "Sit tall, interlace your fingers in front",
+        "Push your arms forward, round your upper back",
+        "Drop your head between your arms"
+      ],
+      "id": [
+        "Duduk tegak, kaitkan jari-jari di depan dada",
+        "Dorong lengan ke depan, bulatkan punggung atas",
+        "Turunkan kepala di antara lengan"
+      ]
+    },
+    "benefit": {
+      "en": "Opens the space between your shoulder blades",
+      "id": "Melemaskan area di antara tulang belikat"
+    },
+    "move": {
+      "times": 3,
+      "beats": [
+        {
+          "pose": 1,
+          "secs": 8,
+          "cue": {
+            "en": "Reach forward, round, hold",
+            "id": "Dorong ke depan, bungkuk, tahan"
+          }
+        },
+        {
+          "pose": 0,
+          "secs": 2,
+          "cue": {
+            "en": "Sit up",
+            "id": "Duduk tegak"
+          }
+        }
+      ]
+    },
+    "area": {
+      "en": "Upper back",
+      "id": "Punggung atas"
     }
   },
   {
@@ -272,6 +851,10 @@
           }
         }
       ]
+    },
+    "area": {
+      "en": "Lower back",
+      "id": "Punggung bawah"
     }
   }
 ]

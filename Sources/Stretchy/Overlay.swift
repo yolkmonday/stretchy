@@ -55,6 +55,7 @@ private struct ReminderView: View {
     @State private var totalLeft = 0
     @State private var pose = 0 // 0 = start pose, 1 = end pose
     @State private var side = 0
+    @State private var mirrored = false
     @State private var rep = 1
     @State private var cue = ""
 
@@ -81,6 +82,8 @@ private struct ReminderView: View {
                     if phase == .ready {
                         Text(L("Next up", "Gerakan berikutnya")).font(.headline).foregroundStyle(.orange)
                     }
+                    Label(ex.area.value, systemImage: "figure.stand")
+                        .font(.subheadline.weight(.medium)).foregroundStyle(.secondary)
                     Text(ex.name.value).font(.system(size: 38, weight: .bold))
                     Text(ex.reps.value).font(.title3).foregroundStyle(.secondary)
                 }
@@ -132,7 +135,7 @@ private struct ReminderView: View {
                     .opacity(pose == i ? 1 : 0)
             }
         }
-        .scaleEffect(x: side == 1 ? -1 : 1)
+        .scaleEffect(x: mirrored ? -1 : 1)
         .padding(28)
         .frame(width: 400, height: 500)
         .background(.white, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
@@ -236,7 +239,10 @@ private struct ReminderView: View {
 
         for (i, step) in ex.plan.enumerated() {
             if i > 0 { NSSound(named: step.side != side ? "Pop" : "Tink")?.play() }
-            withAnimation(.easeInOut(duration: 0.5)) { side = step.side }
+            withAnimation(.easeInOut(duration: 0.5)) {
+                side = step.side
+                mirrored = (step.side == 1) != (step.beat.mirror == true)
+            }
             withAnimation(.easeInOut(duration: 0.9)) { pose = step.beat.pose }
             rep = step.rep
             cue = step.beat.cue.value

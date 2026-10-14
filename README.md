@@ -3,8 +3,13 @@
 Native macOS menu bar app that reminds you to stretch, designed for people with Low Back Pain (LBP).
 
 - Menu bar countdown (`🧘 23m`), no Dock icon
-- Full-screen reminder on every display with a guided exercise (8 LBP stretches)
-- Countdown only runs while you're active; stepping away for the idle threshold counts as a break and closes the reminder
+- Full-screen reminder with a guided, illustrated exercise: 17 desk-friendly stretches covering the whole body (neck, shoulders, chest, wrists, upper/lower back, hips, thighs, calves), rotated so each reminder targets a different area
+- 10 s get-ready preview, then paced counts per move (breathing cues, reps, per-side)
+- Presence detection, no permissions needed:
+  - typing / mouse / trackpad = sitting, timer runs
+  - video playing or microphone in use (calls) = still sitting even without input
+  - in a call when a reminder is due = held until the call ends
+  - screen locked / display asleep, or no activity for the idle threshold = away; counts as a break and resets the timer
 - Snooze 5/10 min (Esc = 5 min), pause, launch at login
 - English / Bahasa Indonesia (follows system language)
 - No Accessibility permission needed

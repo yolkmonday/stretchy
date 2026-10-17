@@ -1,8 +1,10 @@
 #!/bin/bash
-# Build Stretchy.app universal (arm64 + x86_64) di dist/.
-#   VERSION        default: git tag terbaru tanpa "v"
-#   SIGN_IDENTITY  Developer ID; kosong -> ad-hoc
-#   NOTARIZE=1     notarytool (keychain profile "notary") + staple
+# Build Stretchy.app universal (arm64 + x86_64) + .dmg + .pkg di dist/.
+#   VERSION            default: git tag terbaru tanpa "v"
+#   SIGN_IDENTITY      Developer ID Application; kosong -> ad-hoc
+#   INSTALLER_IDENTITY Developer ID Installer; kosong -> pkg unsigned (tidak dinotarisasi)
+#   NOTARIZE=1         notarytool + staple. Kredensial: APPLE_ID/APPLE_PASSWORD/APPLE_TEAM_ID,
+#                      kalau kosong pakai keychain profile "notary"
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -14,7 +16,7 @@ swift build -c release "${ARCH[@]}"
 BIN_DIR="$(swift build -c release "${ARCH[@]}" --show-bin-path)"
 APP="dist/Stretchy.app"
 
-rm -rf "$APP"
+rm -rf dist
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/Stretchy" "$APP/Contents/MacOS/"
 cp -R "$BIN_DIR"/*.bundle "$APP/Contents/Resources/"
@@ -47,14 +49,49 @@ else
 fi
 codesign --verify --deep --strict "$APP"
 
-ZIP="dist/Stretchy-$VERSION.zip"
-ditto -c -k --keepParent "$APP" "$ZIP"
-if [ "${NOTARIZE:-0}" = "1" ]; then
-    OUT="$(xcrun notarytool submit "$ZIP" --keychain-profile notary --wait 2>&1)"
-    echo "$OUT"
-    grep -q "status: Accepted" <<<"$OUT" || { echo "Notarisasi gagal" >&2; exit 1; }
+notarize() {
+    local auth=(--keychain-profile notary)
+    [ -n "${APPLE_ID:-}" ] && auth=(--apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID")
+    local out
+    out="$(xcrun notarytool submit "$1" "${auth[@]}" --wait 2>&1)" || true
+    echo "$out"
+    grep -q "status: Accepted" <<<"$out" || { echo "Notarisasi gagal: $1" >&2; exit 1; }
+}
+
+NOTARIZE="${NOTARIZE:-0}"
+if [ "$NOTARIZE" = "1" ]; then
+    ditto -c -k --keepParent "$APP" dist/notarize.zip
+    notarize dist/notarize.zip
+    rm dist/notarize.zip
     xcrun stapler staple "$APP"
-    rm "$ZIP"
-    ditto -c -k --keepParent "$APP" "$ZIP"
 fi
-echo "==> $APP  ($ZIP)"
+
+# DMG: app + shortcut Applications
+DMG="dist/Stretchy-$VERSION.dmg"
+STAGE="$(mktemp -d)"
+cp -R "$APP" "$STAGE/"
+ln -s /Applications "$STAGE/Applications"
+hdiutil create -volname Stretchy -srcfolder "$STAGE" -fs HFS+ -format UDZO -ov "$DMG"
+rm -rf "$STAGE"
+[ -n "${SIGN_IDENTITY:-}" ] && codesign --force --timestamp -s "$SIGN_IDENTITY" "$DMG"
+
+# PKG: install ke /Applications, jangan relocate ke salinan lain
+PKG="dist/Stretchy-$VERSION.pkg"
+ROOT="$(mktemp -d)"
+cp -R "$APP" "$ROOT/"
+pkgbuild --analyze --root "$ROOT" dist/component.plist
+plutil -replace 0.BundleIsRelocatable -bool NO dist/component.plist
+pkgbuild --root "$ROOT" --component-plist dist/component.plist --install-location /Applications \
+    --identifier com.yolkmonday.stretchy.pkg --version "$VERSION" \
+    ${INSTALLER_IDENTITY:+--sign "$INSTALLER_IDENTITY" --timestamp} "$PKG"
+rm -rf "$ROOT" dist/component.plist
+
+if [ "$NOTARIZE" = "1" ]; then
+    notarize "$DMG"
+    xcrun stapler staple "$DMG"
+    if [ -n "${INSTALLER_IDENTITY:-}" ]; then
+        notarize "$PKG"
+        xcrun stapler staple "$PKG"
+    fi
+fi
+echo "==> $APP  $DMG  $PKG"

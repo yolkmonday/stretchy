@@ -21,9 +21,15 @@ Requires macOS 14+.
 ```bash
 swift run                      # dev
 .build/debug/Stretchy --selftest
-./build-app.sh                 # dist/Stretchy.app + zip (universal)
+./build-app.sh                 # dist/Stretchy.app + .dmg + .pkg (universal)
 SIGN_IDENTITY="Developer ID Application: …" NOTARIZE=1 ./build-app.sh
 ```
+
+## Release
+
+Push a tag (`git tag v0.6.0 && git push origin v0.6.0`). `.github/workflows/release.yml` builds, signs, notarizes and publishes the `.dmg` + `.pkg`, then bumps the `yolkmonday/tap/stretchy` cask.
+
+Secrets: `APPLE_CERTIFICATE` (base64 p12), `APPLE_CERTIFICATE_PASSWORD`, `APPLE_ID`, `APPLE_PASSWORD` (app-specific), `APPLE_TEAM_ID`, `HOMEBREW_TAP_TOKEN` (optional, push access to `homebrew-tap`). The `.pkg` is signed and notarized only if the p12 also holds a "Developer ID Installer" cert.
 
 The old cross-platform Tauri version lives on the `tauri-legacy` branch.
 
